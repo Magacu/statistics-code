@@ -1,6 +1,5 @@
 #' Moments of the Discrete Uniform Distribution U(a,b)
-#' @description Compute the mean and variance for the discrete uniform
-distribution defined on integers a to b (inclusive).
+#' @description Compute the mean and variance for the discrete uniform distribution defined on integers a to b (inclusive).
 #' @param a Integer lower bound.
 #' @param b Integer upper bound (b >= a).
 #' @return A list with elements `mean` and `variance`.

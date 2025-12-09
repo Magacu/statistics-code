@@ -1,9 +1,7 @@
 #' Discrete Uniform Distribution U(a,b)
 #' @family discrete-distributions
-#' @description PMF, CDF, and RNG for a discrete uniform distribution on
-integers a..b (inclusive).
-#' @details Support is the set \code{\\{a, a+1, ..., b\\}}, where a and b are
-integers and \eqn{b \ge a}.
+#' @description PMF, CDF, and RNG for a discrete uniform distribution on integers a..b (inclusive).
+#' @details Support is the set \code{\\{a, a+1, ..., b\\}}, where a and b are integers and \eqn{b \ge a}.
 #'
 #' @param k Integer value(s) at which to evaluate the PMF.
 #' @param q Numeric thresholds at which to evaluate the CDF.
@@ -11,8 +9,7 @@ integers and \eqn{b \ge a}.
 #' @param b Integer upper bound (must satisfy b >= a).
 #' @param n Non-negative integer sample size for RNG.
 #'
-#' @return For \code{discrete_uniform_pmf()} and
-\code{discrete_uniform_cdf()}: a numeric vector.
+#' @return For \code{discrete_uniform_pmf()} and \code{discrete_uniform_cdf()}: a numeric vector.
 #' For \code{discrete_uniform_rnd()}: an integer vector of length \code{n}.
 #'
 #' @examples
