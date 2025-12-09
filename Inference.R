@@ -165,21 +165,32 @@ ci_diff_means <- function(x1, x2, conf_level = 0.95, var_equal = FALSE, sigma1 =
 #' @param sigma_pop Desviación estándar conocida (opcional).
 #' @param alternative "two.sided", "less", o "greater".
 #' @export
-test_mean <- function(x, mu0, sigma_pop = NULL, alternative = "two.sided") {
-  n <- length(x)
-  mean_x <- mean(x)
-  sd_x <- sd(x)
+test_mean <- function(x = NULL, mu0, sigma_pop = NULL, alternative = "two.sided", mean_x = NULL, n = NULL, sd_x = NULL) {
+  if (!is.null(x)) {
+    n <- length(x)
+    mean_x <- mean(x)
+    sd_x <- sd(x)
+  }
   
+  if (is.null(n) || is.null(mean_x)) stop("Must provide raw data 'x' or summary stats 'n' and 'mean_x'.")
+  
+  # Logic based on PDF Page 49
   if (!is.null(sigma_pop)) {
+    # Known Variance -> Z-test
     stat <- (mean_x - mu0) / (sigma_pop / sqrt(n))
     dist <- "norm"
     method <- "Z-test (Known Variance)"
   } else {
+    # Unknown Variance
+    if (is.null(sd_x)) stop("Must provide 'sd_x' if variance is unknown.")
+    
     if (n > 30) {
+      # Large Sample -> Z-test approx
       stat <- (mean_x - mu0) / (sd_x / sqrt(n))
       dist <- "norm"
       method <- "Z-test Approx (Unknown Variance, Large n)"
     } else {
+      # Small Sample -> T-test
       stat <- (mean_x - mu0) / (sd_x / sqrt(n))
       dist <- "t"
       method <- "T-test (Unknown Variance, Small n)"
@@ -198,6 +209,7 @@ test_mean <- function(x, mu0, sigma_pop = NULL, alternative = "two.sided") {
   
   return(list(statistic = stat, p.value = p_val, method = method, alternative = alternative))
 }
+
 
 #' @param x Conteo de éxitos o vector.
 #' @param n Tamaño de muestra (requerido si x es conteo).
