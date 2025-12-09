@@ -495,3 +495,58 @@ test_var_ratio <- function(x1, x2, alternative = "two.sided") {
   res <- var.test(x1, x2, alternative = alternative)
   return(list(statistic = res$statistic, df = res$parameter, p.value = res$p.value, conf.int = res$conf.int))
 }
+
+test_variance <- function(n, sample_variance, hypothesized_variance, alpha = 0.05, test_type = "two.tailed") {
+  
+  # 1. Calculate Degrees of Freedom
+  df <- n - 1
+  
+  # 2. Calculate Chi-Square Statistic
+  # Formula: X^2 = (n - 1) * s^2 / sigma_0^2
+  chi_square_stat <- df * sample_variance / hypothesized_variance
+  
+  # 3. Calculate p-value based on test type
+  p_val <- NA
+  
+  if (test_type == "two.tailed") {
+    # Two-tailed: 2 * min(P(X < stat), P(X > stat))
+    lower_tail <- pchisq(chi_square_stat, df)
+    upper_tail <- 1 - pchisq(chi_square_stat, df)
+    p_val <- 2 * min(lower_tail, upper_tail)
+    
+  } else if (test_type == "greater") {
+    # Right-tailed: P(X > stat)
+    p_val <- 1 - pchisq(chi_square_stat, df, lower.tail = TRUE)
+    
+  } else if (test_type == "less") {
+    # Left-tailed: P(X < stat)
+    p_val <- pchisq(chi_square_stat, df, lower.tail = TRUE)
+    
+  } else {
+    stop("Invalid test type. Use 'two.tailed', 'greater', or 'less'.")
+  }
+  
+  # 4. Critical Values (for reporting)
+  crit_lower <- qchisq(alpha / 2, df)
+  crit_upper <- qchisq(1 - alpha / 2, df)
+  
+  # Output Results
+  cat("--- One-Sample Chi-Square Variance Test ---\n")
+  cat(sprintf("Sample Size (n): %d\n", n))
+  cat(sprintf("Sample Variance (s^2): %.4f\n", sample_variance))
+  cat(sprintf("Hypothesized Variance (sigma_0^2): %.4f\n", hypothesized_variance))
+  cat(sprintf("Degrees of Freedom: %d\n", df))
+  cat("------------------------------\n")
+  cat(sprintf("Chi-Square Statistic: %.4f\n", chi_square_stat))
+  cat(sprintf("P-Value: %.4f\n", p_val))
+  
+  if (test_type == "two.tailed") {
+    cat(sprintf("Reject H0 if statistic < %.4f or > %.4f\n", crit_lower, crit_upper))
+  }
+  
+  if (p_val < alpha) {
+    cat("\nCONCLUSION: Reject the Null Hypothesis.\n")
+  } else {
+    cat("\nCONCLUSION: Fail to Reject the Null Hypothesis.\n")
+  }
+}
